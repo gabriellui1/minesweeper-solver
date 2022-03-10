@@ -2,10 +2,21 @@ import math
 import mss
 import cv2 as cv
 import numpy as np
-import keyboard
 import pyautogui
 from PIL import Image
 import time
+
+
+class bcolors:
+    HEADER = '\033[95m'
+    OKBLUE = '\033[94m'
+    OKCYAN = '\033[96m'
+    OKGREEN = '\033[92m'
+    WARNING = '\033[93m'
+    FAIL = '\033[91m'
+    ENDC = '\033[0m'
+    BOLD = '\033[1m'
+    UNDERLINE = '\033[4m'
 
 
 def fastcopy(d):
@@ -38,7 +49,7 @@ def findTiles(tiles, world, race):
 
 def checkLegal(world):
     bombs = findTiles(world, world, [9])
-    numbers = findTiles(world, world, [1, 2, 3, 4, 5, 6])
+    numbers = findTiles(world, world, [1, 2, 3, 4, 5])
     unknowns = findTiles(world, world, [-1])
     for tile in numbers:
         neighBombs = findNeighbours(tile, bombs)
@@ -54,7 +65,7 @@ def checkLegal(world):
 
 def fillTiles(world):
     bombs = findTiles(world, world, [9])
-    numbers = findTiles(world, world, [1, 2, 3, 4, 5, 6])
+    numbers = findTiles(world, world, [1, 2, 3, 4, 5])
     unknownTiles = findTiles(world, world, [-1])
 
     for tile in numbers:
@@ -72,7 +83,7 @@ def fillTiles(world):
 
 
 def fillBombs(world):
-    numbers = findTiles(world, world, [1, 2, 3, 4, 5, 6])
+    numbers = findTiles(world, world, [1, 2, 3, 4, 5])
     unknowns = findTiles(world, world, [-1, 9])
 
     for tile in numbers:
@@ -92,15 +103,27 @@ def completeEasy(world):
 
 
 def completeHard(world):
+    oldWorld = fastcopy(world)
     world = completeEasy(world)
 
-    allBlocks = findTiles(world, world, [1, 2, 3, 4, 5, 6])
+    changes = 0
+    for pos in world:
+        if world[pos] != oldWorld[pos]:
+            changes += 1
+
+    # if changes > 10:
+    #     return world
+
+    allBlocks = findTiles(world, world, [1, 2, 3, 4, 5])
     unknownTiles = findTiles(world, world, [-1])
 
     blockNeighbours = set()
 
     for tile in allBlocks:
         blockNeighbours |= findNeighbours(tile, unknownTiles)
+
+    if len(unknownTiles) < 20:
+        blockNeighbours |= unknownTiles
 
     count = 0
 
@@ -184,20 +207,21 @@ def printWorld():
         message = ""
         for j in range(24):
             c = str(world[(j, i)])
+
             if c == "-1":
                 c = " "
             if c == "10":
-                c = "#"
+                c = f"{bcolors.OKGREEN}#{bcolors.ENDC}"
+            if c == "9":
+                c = f"{bcolors.WARNING}!{bcolors.ENDC}"
+            if c in map(str, [1, 2, 3, 4, 5, 6]):
+                c = f"{bcolors.OKCYAN}{c}{bcolors.ENDC}"
+
             message += "| " + c + " "
 
         message += "|"
 
         print(message)
-
-
-keyboard.wait("q")
-
-firstStartTime = time.time()
 
 
 knownTiles = set()
@@ -210,24 +234,25 @@ turns = 0
 
 sct = mss.mss()
 
-LEFT = 570
-TOP = 375
+LEFT = 650
+TOP = 510
 
-RIGHT = 1650
-BOTTOM = 1320
+RIGHT = 1590
+BOTTOM = 1290
 
-WIDTH = RIGHT - LEFT  # 1080
-HEIGHT = BOTTOM - TOP  # 900
+WIDTH = RIGHT - LEFT
+HEIGHT = BOTTOM - TOP
 
-blockWidth = int(WIDTH / 24)  # 45
+blockWidth = int(WIDTH / 24)
+blockMiddle = int(blockWidth / 2)
 
 # width 24
 # height 20
 
-# top left 570, 420
-# top right 1650, 420
-# bottom left 570, 1320
-# bottom right 1650, 1320
+# top left      650, 510
+# bottom right  1590, 1290
+# bottom left   650, 1290
+# top right     1590, 150
 
 world = {}
 for x in range(24):
@@ -253,17 +278,25 @@ for x in range(24):
 
         getNeighbours[(x, y)] = neighs
 
-pyautogui.PAUSE = 0
-# pyautogui.PAUSE = 0.1
+# pyautogui.PAUSE = 0
+pyautogui.PAUSE = 0.03
 
-mine1 = cv.imread(r"C:\Users\boneb\well\auto\minesweeper\pics\mine1.png", 0)
-mine2 = cv.imread(r"C:\Users\boneb\well\auto\minesweeper\pics\mine2.png", 0)
-mine3 = cv.imread(r"C:\Users\boneb\well\auto\minesweeper\pics\mine3.png", 0)
-mine4 = cv.imread(r"C:\Users\boneb\well\auto\minesweeper\pics\mine4.png", 0)
-mine5 = cv.imread(r"C:\Users\boneb\well\auto\minesweeper\pics\mine5.png", 0)
+lMine1 = cv.imread("/home/bigmac/projects/minesweeper/pics/l_mine1.png", 0)
+lMine2 = cv.imread("/home/bigmac/projects/minesweeper/pics/l_mine2.png", 0)
+lMine3 = cv.imread("/home/bigmac/projects/minesweeper/pics/l_mine3.png", 0)
+lMine4 = cv.imread("/home/bigmac/projects/minesweeper/pics/l_mine4.png", 0)
+lMine5 = cv.imread("/home/bigmac/projects/minesweeper/pics/l_mine5.png", 0)
 
+dMine1 = cv.imread("/home/bigmac/projects/minesweeper/pics/d_mine1.png", 0)
+dMine2 = cv.imread("/home/bigmac/projects/minesweeper/pics/d_mine2.png", 0)
+dMine3 = cv.imread("/home/bigmac/projects/minesweeper/pics/d_mine3.png", 0)
+dMine4 = cv.imread("/home/bigmac/projects/minesweeper/pics/d_mine4.png", 0)
+dMine5 = cv.imread("/home/bigmac/projects/minesweeper/pics/d_mine5.png", 0)
 
 grey = [(215, 184, 153), (229, 194, 159)]
+
+time.sleep(3)
+firstStartTime = time.time()
 
 while True:
 
@@ -276,18 +309,24 @@ while True:
     screen = np.array(scr)
     greyScreen = cv.cvtColor(screen, cv.COLOR_BGR2GRAY)
 
-    mine1Points = locateAllImages(greyScreen, mine1, 0.9)
-    mine2Points = locateAllImages(greyScreen, mine2, 0.9)
-    mine3Points = locateAllImages(greyScreen, mine3, 0.8)
-    mine4Points = locateAllImages(greyScreen, mine4, 0.9)
-    mine5Points = locateAllImages(greyScreen, mine5, 0.8)
+    dMine1Points = locateAllImages(greyScreen, dMine1, 0.95)
+    dMine2Points = locateAllImages(greyScreen, dMine2, 0.95)
+    dMine3Points = locateAllImages(greyScreen, dMine3, 0.95)
+    dMine4Points = locateAllImages(greyScreen, dMine4, 0.95)
+    dMine5Points = locateAllImages(greyScreen, dMine5, 0.95)
+
+    lMine1Points = locateAllImages(greyScreen, lMine1, 0.95)
+    lMine2Points = locateAllImages(greyScreen, lMine2, 0.95)
+    lMine3Points = locateAllImages(greyScreen, lMine3, 0.95)
+    lMine4Points = locateAllImages(greyScreen, lMine4, 0.95)
+    lMine5Points = locateAllImages(greyScreen, lMine5, 0.95)
 
     mines = [
-        mine1Points,
-        mine2Points,
-        mine3Points,
-        mine4Points,
-        mine5Points,
+            dMine1Points+lMine1Points,
+            dMine2Points+lMine2Points,
+            dMine3Points+lMine3Points,
+            dMine4Points+lMine4Points,
+            dMine5Points+lMine5Points,
     ]
 
     level = 1
@@ -298,22 +337,27 @@ while True:
         level += 1
 
     for gridPixel in world:
-        pixelPos = getScreenPos(gridPixel, 22, 22)
+        pixelPos = getScreenPos(gridPixel, blockMiddle, blockMiddle)
         if world[gridPixel] == -1:
-            pixelPos = getScreenPos(gridPixel, 22, 22)
+            pixelPos = getScreenPos(gridPixel, blockMiddle, blockMiddle)
             pixelColour = RGBscreen.getpixel(pixelPos)
 
             for sColour in grey:
                 if aroundColour(sColour, pixelColour):
                     world[gridPixel] = 0
 
+    print(f"picture {time.time()-start_time}")
+
     world = completeHard(world)
+
+    # print(printWorld())
+    print(f"calculate {time.time()-start_time}")
 
     unknowns = 0
     newClicks = 0
     knowns = []
     for tile in world:
-        worldPos = getScreenPos(tile, 22, 22)
+        worldPos = getScreenPos(tile, blockMiddle, blockMiddle)
 
         if world[tile] == -1:
             unknowns += 1
@@ -325,15 +369,17 @@ while True:
 
         if world[tile] == 10:
             mx, my = (worldPos[0] + LEFT, worldPos[1] + TOP)
-
             pyautogui.click(mx, my, button="left")
-
-            world[tile] = -1
             alreadyClicked.add(tile)
+            world[tile] = -1
             newClicks += 1
+        elif world[tile] == 9:  # don't flag
+            mx, my = (worldPos[0] + LEFT, worldPos[1] + TOP)
+            pyautogui.click(mx, my, button="right")
+            alreadyClicked.add(tile)
+
+    print(f"click {time.time()-start_time}")
 
     if unknowns == 0 and time.time() - firstStartTime > 2:
         print("I win")
         break
-
-    print(time.time() - start_time)
