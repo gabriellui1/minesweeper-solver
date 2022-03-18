@@ -225,34 +225,11 @@ def printWorld():
 
 
 knownTiles = set()
-
 alreadyClicked = set()
-
 noMovesTime = -1
-
 turns = 0
 
 sct = mss.mss()
-
-LEFT = 650
-TOP = 510
-
-RIGHT = 1590
-BOTTOM = 1290
-
-WIDTH = RIGHT - LEFT
-HEIGHT = BOTTOM - TOP
-
-blockWidth = int(WIDTH / 24)
-blockMiddle = int(blockWidth / 2)
-
-# width 24
-# height 20
-
-# top left      650, 510
-# bottom right  1590, 1290
-# bottom left   650, 1290
-# top right     1590, 150
 
 world = {}
 for x in range(24):
@@ -279,27 +256,47 @@ for x in range(24):
         getNeighbours[(x, y)] = neighs
 
 # pyautogui.PAUSE = 0
-pyautogui.PAUSE = 0.03
+pyautogui.PAUSE = 0
+homedir = "/home/bigmac/"
 
-lMine1 = cv.imread("/home/bigmac/projects/minesweeper/pics/l_mine1.png", 0)
-lMine2 = cv.imread("/home/bigmac/projects/minesweeper/pics/l_mine2.png", 0)
-lMine3 = cv.imread("/home/bigmac/projects/minesweeper/pics/l_mine3.png", 0)
-lMine4 = cv.imread("/home/bigmac/projects/minesweeper/pics/l_mine4.png", 0)
-lMine5 = cv.imread("/home/bigmac/projects/minesweeper/pics/l_mine5.png", 0)
+lMine1 = cv.imread(f"{homedir}projects/minesweeper/pics/l_mine1.png", 0)
+lMine2 = cv.imread(f"{homedir}projects/minesweeper/pics/l_mine2.png", 0)
+lMine3 = cv.imread(f"{homedir}projects/minesweeper/pics/l_mine3.png", 0)
+lMine4 = cv.imread(f"{homedir}projects/minesweeper/pics/l_mine4.png", 0)
+lMine5 = cv.imread(f"{homedir}projects/minesweeper/pics/l_mine5.png", 0)
 
-dMine1 = cv.imread("/home/bigmac/projects/minesweeper/pics/d_mine1.png", 0)
-dMine2 = cv.imread("/home/bigmac/projects/minesweeper/pics/d_mine2.png", 0)
-dMine3 = cv.imread("/home/bigmac/projects/minesweeper/pics/d_mine3.png", 0)
-dMine4 = cv.imread("/home/bigmac/projects/minesweeper/pics/d_mine4.png", 0)
-dMine5 = cv.imread("/home/bigmac/projects/minesweeper/pics/d_mine5.png", 0)
+dMine1 = cv.imread(f"{homedir}projects/minesweeper/pics/d_mine1.png", 0)
+dMine2 = cv.imread(f"{homedir}projects/minesweeper/pics/d_mine2.png", 0)
+dMine3 = cv.imread(f"{homedir}projects/minesweeper/pics/d_mine3.png", 0)
+dMine4 = cv.imread(f"{homedir}projects/minesweeper/pics/d_mine4.png", 0)
+dMine5 = cv.imread(f"{homedir}projects/minesweeper/pics/d_mine5.png", 0)
 
 grey = [(215, 184, 153), (229, 194, 159)]
 
 time.sleep(3)
+
+boardImg = f"{homedir}projects/minesweeper/pics/board.png"
+board = pyautogui.locateOnScreen(boardImg, confidence=0.9)
+
+if board:
+    TOP = board.top
+    LEFT = board.left
+    WIDTH = board.width
+    HEIGHT = board.height
+    pyautogui.click(LEFT+WIDTH/2, TOP+HEIGHT/2)
+else:
+    LEFT = 650
+    TOP = 510
+    RIGHT = 1590
+    BOTTOM = 1290
+    WIDTH = RIGHT - LEFT
+    HEIGHT = BOTTOM - TOP
+
+blockWidth = int(WIDTH / 24)
+blockMiddle = int(blockWidth / 2)
+
 firstStartTime = time.time()
-
 while True:
-
     start_time = time.time()
 
     monitor = {"top": TOP, "left": LEFT, "width": WIDTH, "height": HEIGHT}
