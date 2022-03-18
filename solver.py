@@ -343,8 +343,8 @@ while True:
     print(f"picture {time.time()-start_time}")
 
     world = completeHard(world)
-
     # print(printWorld())
+
     print(f"calculate {time.time()-start_time}")
 
     unknowns = 0
