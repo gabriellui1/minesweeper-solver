@@ -111,9 +111,6 @@ def completeHard(world):
         if world[pos] != oldWorld[pos]:
             changes += 1
 
-    # if changes > 10:
-    #     return world
-
     allBlocks = findTiles(world, world, [1, 2, 3, 4, 5])
     unknownTiles = findTiles(world, world, [-1])
 
