@@ -90,7 +90,6 @@ def fillBombs(world):
         neigh = findNeighbours(tile, unknowns)
         value = world[tile]
         value -= len(neigh)
-
         if value >= 0:
             for bomb in neigh:
                 world[bomb] = 9
@@ -113,7 +112,6 @@ def completeHard(world):
 
     allBlocks = findTiles(world, world, [1, 2, 3, 4, 5])
     unknownTiles = findTiles(world, world, [-1])
-
     blockNeighbours = set()
 
     for tile in allBlocks:
@@ -123,7 +121,6 @@ def completeHard(world):
         blockNeighbours |= unknownTiles
 
     count = 0
-
     for tile in blockNeighbours:
         testWorld = fastcopy(world)
         testWorld[tile] = 9
@@ -143,7 +140,6 @@ def completeHard(world):
         count += 1
 
     world = completeEasy(world)
-
     return world
 
 
@@ -166,18 +162,14 @@ def aroundColour(G, V, r=15):
 def locateAllImages(mainScreen, template, threshold=0.8):
     result = cv.matchTemplate(mainScreen, template, cv.TM_CCOEFF_NORMED)
     loc = np.where(result >= threshold)
-
     found = []
-
     for pt in zip(*loc[::-1]):
         found.append(pt)
-
     return found
 
 
 def getWorldPos(position):
     x, y = position
-
     x /= blockWidth
     y /= blockWidth
     x = math.floor(x)
@@ -187,7 +179,6 @@ def getWorldPos(position):
 
 def getScreenPos(position, offsetX=0, offsetY=0):
     x, y = position
-
     x *= blockWidth
     y *= blockWidth
 
@@ -204,7 +195,6 @@ def printWorld():
         message = ""
         for j in range(24):
             c = str(world[(j, i)])
-
             if c == "-1":
                 c = " "
             if c == "10":
@@ -213,11 +203,8 @@ def printWorld():
                 c = f"{bcolors.WARNING}!{bcolors.ENDC}"
             if c in map(str, [1, 2, 3, 4, 5, 6]):
                 c = f"{bcolors.OKCYAN}{c}{bcolors.ENDC}"
-
             message += "| " + c + " "
-
         message += "|"
-
         print(message)
 
 
@@ -242,18 +229,15 @@ for x in range(24):
         neighs.append((x + 1, y))
         neighs.append((x, y - 1))
         neighs.append((x, y + 1))
-
         neighs.append((x + 1, y + 1))
         neighs.append((x - 1, y + 1))
         neighs.append((x + 1, y - 1))
         neighs.append((x - 1, y - 1))
 
         neighs = [pos for pos in neighs if pos in world]
-
         getNeighbours[(x, y)] = neighs
 
-# pyautogui.PAUSE = 0
-pyautogui.PAUSE = 0
+pyautogui.PAUSE = 0.03
 homedir = "/home/bigmac/"
 
 lMine1 = cv.imread(f"{homedir}projects/minesweeper/pics/l_mine1.png", 0)
@@ -340,12 +324,12 @@ while True:
                 if aroundColour(sColour, pixelColour):
                     world[gridPixel] = 0
 
-    print(f"picture {time.time()-start_time}")
+    # print(f"picture {time.time()-start_time}")
 
     world = completeHard(world)
     # print(printWorld())
 
-    print(f"calculate {time.time()-start_time}")
+    # print(f"calculate {time.time()-start_time}")
 
     unknowns = 0
     newClicks = 0
@@ -372,7 +356,7 @@ while True:
             pyautogui.click(mx, my, button="right")
             alreadyClicked.add(tile)
 
-    print(f"click {time.time()-start_time}")
+    # print(f"click {time.time()-start_time}")
 
     if unknowns == 0 and time.time() - firstStartTime > 2:
         print("I win")
