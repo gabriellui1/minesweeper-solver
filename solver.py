@@ -257,7 +257,7 @@ grey = [(215, 184, 153), (229, 194, 159)]
 time.sleep(3)
 
 boardImg = f"{homedir}projects/minesweeper/pics/board.png"
-board = pyautogui.locateOnScreen(boardImg, confidence=0.9)
+board = pyautogui.locateOnScreen(boardImg, confidence=0.7)
 
 if board:
     TOP = board.top
@@ -266,6 +266,7 @@ if board:
     HEIGHT = board.height
     pyautogui.click(LEFT+WIDTH/2, TOP+HEIGHT/2)
 else:
+    exit()
     LEFT = 650
     TOP = 510
     RIGHT = 1590
