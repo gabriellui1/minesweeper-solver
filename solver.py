@@ -51,11 +51,13 @@ def checkLegal(world):
     bombs = findTiles(world, world, [9])
     numbers = findTiles(world, world, [1, 2, 3, 4, 5])
     unknowns = findTiles(world, world, [-1])
+
     for tile in numbers:
         neighBombs = findNeighbours(tile, bombs)
         neighUnknowns = findNeighbours(tile, unknowns)
         value = world[tile]
         value -= len(neighBombs)
+
         if value < 0:
             return False
         if value - len(neighUnknowns) > 0:
@@ -78,7 +80,6 @@ def fillTiles(world):
             for neigh in neighbours:
                 if neigh != tile:
                     world[neigh] = 10
-
     return world
 
 
@@ -93,7 +94,6 @@ def fillBombs(world):
         if value >= 0:
             for bomb in neigh:
                 world[bomb] = 9
-
     return world
 
 
@@ -136,7 +136,6 @@ def completeHard(world):
 
         if not checkLegal(testWorld):
             world[tile] = 9
-
         count += 1
 
     world = completeEasy(world)
@@ -237,26 +236,25 @@ for x in range(24):
         neighs = [pos for pos in neighs if pos in world]
         getNeighbours[(x, y)] = neighs
 
-pyautogui.PAUSE = 0.03
-homedir = "/home/bigmac/"
+pyautogui.PAUSE = 0
 
-lMine1 = cv.imread(f"{homedir}projects/minesweeper/pics/l_mine1.png", 0)
-lMine2 = cv.imread(f"{homedir}projects/minesweeper/pics/l_mine2.png", 0)
-lMine3 = cv.imread(f"{homedir}projects/minesweeper/pics/l_mine3.png", 0)
-lMine4 = cv.imread(f"{homedir}projects/minesweeper/pics/l_mine4.png", 0)
-lMine5 = cv.imread(f"{homedir}projects/minesweeper/pics/l_mine5.png", 0)
+lMine1 = cv.imread("pics/l_mine1.png", 0)
+lMine2 = cv.imread("pics/l_mine2.png", 0)
+lMine3 = cv.imread("pics/l_mine3.png", 0)
+lMine4 = cv.imread("pics/l_mine4.png", 0)
+lMine5 = cv.imread("pics/l_mine5.png", 0)
 
-dMine1 = cv.imread(f"{homedir}projects/minesweeper/pics/d_mine1.png", 0)
-dMine2 = cv.imread(f"{homedir}projects/minesweeper/pics/d_mine2.png", 0)
-dMine3 = cv.imread(f"{homedir}projects/minesweeper/pics/d_mine3.png", 0)
-dMine4 = cv.imread(f"{homedir}projects/minesweeper/pics/d_mine4.png", 0)
-dMine5 = cv.imread(f"{homedir}projects/minesweeper/pics/d_mine5.png", 0)
+dMine1 = cv.imread("pics/d_mine1.png", 0)
+dMine2 = cv.imread("pics/d_mine2.png", 0)
+dMine3 = cv.imread("pics/d_mine3.png", 0)
+dMine4 = cv.imread("pics/d_mine4.png", 0)
+dMine5 = cv.imread("pics/d_mine5.png", 0)
 
 grey = [(215, 184, 153), (229, 194, 159)]
 
 time.sleep(3)
 
-boardImg = f"{homedir}projects/minesweeper/pics/board.png"
+boardImg = "pics/board.png"
 board = pyautogui.locateOnScreen(boardImg, confidence=0.7)
 
 if board:
