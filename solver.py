@@ -184,7 +184,6 @@ def getScreenPos(position, offsetX=0, offsetY=0):
     if offsetX != 0 or offsetY != 0:
         x += offsetX
         y += offsetY
-
     return (round(x), round(y))
 
 
@@ -306,6 +305,8 @@ while True:
             dMine5Points+lMine5Points,
     ]
 
+    print(len(mines))
+
     level = 1
     for levels in mines:
         for position in levels:
@@ -326,7 +327,7 @@ while True:
     # print(f"picture {time.time()-start_time}")
 
     world = completeHard(world)
-    # print(printWorld())
+    print(printWorld())
 
     # print(f"calculate {time.time()-start_time}")
 
@@ -355,7 +356,7 @@ while True:
             pyautogui.click(mx, my, button="right")
             alreadyClicked.add(tile)
 
-    # print(f"click {time.time()-start_time}")
+    print(f"click {time.time()-start_time} {len(world)}")
 
     if unknowns == 0 and time.time() - firstStartTime > 2:
         print("I win")
