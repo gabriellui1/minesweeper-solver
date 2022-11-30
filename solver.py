@@ -351,7 +351,7 @@ while True:
             alreadyClicked.add(tile)
             world[tile] = -1
             newClicks += 1
-        elif world[tile] == 9:  # don't flag
+        elif world[tile] == 9 and False:  # don't flag
             mx, my = (worldPos[0] + LEFT, worldPos[1] + TOP)
             pyautogui.click(mx, my, button="right")
             alreadyClicked.add(tile)
