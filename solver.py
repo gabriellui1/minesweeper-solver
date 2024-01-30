@@ -256,6 +256,8 @@ time.sleep(3)
 boardImg = "pics/board.png"
 board = pyautogui.locateOnScreen(boardImg, confidence=0.7)
 
+print("test 1", board)
+
 if board:
     TOP = board.top
     LEFT = board.left
@@ -263,6 +265,7 @@ if board:
     HEIGHT = board.height
     pyautogui.click(LEFT+WIDTH/2, TOP+HEIGHT/2)
 else:
+    print("exit")
     exit()
     LEFT = 650
     TOP = 510
@@ -271,6 +274,7 @@ else:
     WIDTH = RIGHT - LEFT
     HEIGHT = BOTTOM - TOP
 
+print("hi")
 blockWidth = int(WIDTH / 24)
 blockMiddle = int(blockWidth / 2)
 
@@ -324,12 +328,12 @@ while True:
                 if aroundColour(sColour, pixelColour):
                     world[gridPixel] = 0
 
-    # print(f"picture {time.time()-start_time}")
+    print(f"picture {time.time()-start_time}")
 
     world = completeHard(world)
     print(printWorld())
 
-    # print(f"calculate {time.time()-start_time}")
+    print(f"calculate {time.time()-start_time}")
 
     unknowns = 0
     newClicks = 0
@@ -351,7 +355,7 @@ while True:
             alreadyClicked.add(tile)
             world[tile] = -1
             newClicks += 1
-        elif world[tile] == 9 and False:  # don't flag
+        elif world[tile] == 9:  # don't flag
             mx, my = (worldPos[0] + LEFT, worldPos[1] + TOP)
             pyautogui.click(mx, my, button="right")
             alreadyClicked.add(tile)
